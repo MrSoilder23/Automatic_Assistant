@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Main extends Container {
 
-    OpenWeatherMapClient openWeatherClient = new OpenWeatherMapClient("4f25235064e7eadae7fa51916f58645d");
+    OpenWeatherMapClient openWeatherClient = new OpenWeatherMapClient("");
 
     private static Main app;
 
