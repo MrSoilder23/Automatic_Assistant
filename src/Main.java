@@ -6,6 +6,9 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class Main extends Container {
 
@@ -36,6 +39,8 @@ public class Main extends Container {
         window.setLayout(null);
         window.setResizable(false);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        window.setLocationRelativeTo(null);
+
         app.menu();
     }
 
@@ -132,10 +137,39 @@ public class Main extends Container {
         textPane.setBounds(0, 0, 500, 400);
         textPane.setBackground(firstColor);
         textPane.setFont(textFont);
-
-
+        textPane.setEditable(false);
 
         window.add(GUIPanel);
+    }
+
+    public void controlSystem() {
+        DateTimeFormatter time = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalTime now = LocalTime.now();
+
+        DateTimeFormatter day = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        LocalDate today = LocalDate.now();
+
+        StyledDocument doc = textPane.getStyledDocument();
+
+        SimpleAttributeSet right = new SimpleAttributeSet();
+        StyleConstants.setAlignment(right, StyleConstants.ALIGN_RIGHT);
+
+        try {
+            if (txt.contains("godzina")) {
+                doc.insertString(doc.getLength(), "\nJest Godzina " + time.format(now), right);
+                doc.setParagraphAttributes(doc.getLength(), 1, right, false);
+
+            } else if (txt.contains("dzien")) {
+                doc.insertString(doc.getLength(), "\nDzisiaj jest " + day.format(today), right);
+                doc.setParagraphAttributes(doc.getLength(), 1, right, false);
+
+            }
+
+
+
+        } catch (BadLocationException e) {
+        e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
@@ -164,9 +198,6 @@ public class Main extends Container {
             SimpleAttributeSet left = new SimpleAttributeSet();
             StyleConstants.setAlignment(left, StyleConstants.ALIGN_LEFT);
 
-            SimpleAttributeSet right = new SimpleAttributeSet();
-            StyleConstants.setAlignment(right, StyleConstants.ALIGN_RIGHT);
-
             txt = textField.getText();
             textField.setText("");
 
@@ -179,7 +210,7 @@ public class Main extends Container {
 
             System.out.println(txt);
 
-
+            app.controlSystem();
         }
     };
 
