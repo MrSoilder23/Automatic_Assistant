@@ -1,3 +1,8 @@
+import com.github.prominence.openweathermap.api.OpenWeatherMapClient;
+import com.github.prominence.openweathermap.api.enums.Language;
+import com.github.prominence.openweathermap.api.enums.UnitSystem;
+import com.github.prominence.openweathermap.api.model.weather.Weather;
+
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
@@ -11,6 +16,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class Main extends Container {
+
+    OpenWeatherMapClient openWeatherClient = new OpenWeatherMapClient("4f25235064e7eadae7fa51916f58645d");
 
     private static Main app;
 
@@ -142,6 +149,15 @@ public class Main extends Container {
         window.add(GUIPanel);
     }
 
+    final Weather weather = openWeatherClient
+            .currentWeather()
+            .single()
+            .byCityName("Kraśnik")
+            .language(Language.POLISH)
+            .unitSystem(UnitSystem.METRIC)
+            .retrieve()
+            .asJava();
+
     public void controlSystem() {
         DateTimeFormatter time = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalTime now = LocalTime.now();
@@ -157,11 +173,19 @@ public class Main extends Container {
         try {
             if (txt.contains("godzina")) {
                 doc.insertString(doc.getLength(), "\nJest Godzina " + time.format(now), right);
-                doc.setParagraphAttributes(doc.getLength(), 1, right, false);
+                doc.setParagraphAttributes(doc.getLength(), 5, right, false);
 
-            } else if (txt.contains("dzien")) {
+            } else if (txt.contains("dzien") || txt.contains("data")) {
                 doc.insertString(doc.getLength(), "\nDzisiaj jest " + day.format(today), right);
-                doc.setParagraphAttributes(doc.getLength(), 1, right, false);
+                doc.setParagraphAttributes(doc.getLength(), 5, right, false);
+
+            } else if (txt.contains("potrafisz")) {
+                doc.insertString(doc.getLength(), "\nNa ten moment jestem w stanie podać ci godzine oraz date", right);
+                doc.setParagraphAttributes(doc.getLength(), 5, right, false);
+
+            } else if (txt.contains("pogoda")) {
+                doc.insertString(doc.getLength(), "\nObecna pogoda: " + weather, right);
+                doc.setParagraphAttributes(doc.getLength(), 5, right, false);
 
             }
 
@@ -203,7 +227,7 @@ public class Main extends Container {
 
             try {
                 doc.insertString(doc.getLength(),"\n" + txt, left);
-                doc.setParagraphAttributes(doc.getLength(), 1, left, false);
+                doc.setParagraphAttributes(doc.getLength(), 5, left, false);
             } catch (BadLocationException ex) {
                 ex.printStackTrace();
             }
@@ -213,5 +237,6 @@ public class Main extends Container {
             app.controlSystem();
         }
     };
+
 
 }
